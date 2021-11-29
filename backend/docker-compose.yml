@@ -1,0 +1,36 @@
+version: "3"
+
+volumes:
+  db-data:
+
+networks:
+  luby_cash:
+    external: true
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: ./docker/backend/Dockerfile
+    ports:
+      - "3333:3333"
+    working_dir: /usr/app
+    volumes:
+      - .:/usr/app
+    networks:
+      - luby_cash
+    depends_on:
+      - mysql-backend
+  mysql-backend:
+    build:
+      context: ./docker/db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: luby_cash_backend
+    ports:
+      - "3307:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - luby_cash

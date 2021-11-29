@@ -1,0 +1,36 @@
+version: "3"
+
+volumes:
+  db-data:
+
+networks:
+  luby_cash:
+    external: true
+
+services:
+  microservice:
+    build:
+      context: .
+      dockerfile: ./docker/microservice/Dockerfile
+    ports:
+      - "8080:8080"
+    working_dir: /usr/app
+    volumes:
+      - .:/usr/app
+    networks:
+      - luby_cash
+    depends_on:
+      - mysql-microservice
+  mysql-microservice:
+    build:
+      context: ./docker/db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: luby_cash_ms
+    ports:
+      - "3308:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - luby_cash
