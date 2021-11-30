@@ -1,9 +1,14 @@
 import { Kafka } from 'kafkajs'
+import { CreateUser } from '../services/UsersService'
 
 interface ConsumerProps{
     groupId: string
     topic: string
     fromBeginning?: boolean
+}
+
+interface MessageValue{
+
 }
 
 const kafka = new Kafka({
@@ -19,9 +24,9 @@ export async function Consumer({ groupId, topic, fromBeginning = false }: Consum
 
     await consumer.run({
         eachMessage: async ({ topic, partition, message }) => {
-            console.log({
-                value: message.value?.toString()
-            })
+            if(message.value)
+                if(topic === 'new-user')
+                    CreateUser(JSON.parse(message.value.toString()))
         }
     })
 }

@@ -8,10 +8,10 @@ networks:
     external: true
 
 services:
-  backend:
+  api:
     build:
       context: .
-      dockerfile: ./docker/backend/Dockerfile
+      dockerfile: ./docker/api/Dockerfile
     ports:
       - "3333:3333"
     working_dir: /usr/app
@@ -20,14 +20,14 @@ services:
     networks:
       - luby_cash
     depends_on:
-      - mysql-backend
-  mysql-backend:
+      - mysql-api
+  mysql-api:
     build:
       context: ./docker/db
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: luby_cash_backend
+      MYSQL_DATABASE: luby_cash_api
     ports:
       - "3307:3306"
     volumes:

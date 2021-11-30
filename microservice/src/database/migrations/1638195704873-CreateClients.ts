@@ -8,8 +8,8 @@ export class CreateClients1638195704873 implements MigrationInterface {
             columns: [
                 {
                     name: 'id',
+                    type: 'char(36)',
                     isPrimary: true,
-                    type: 'uuid',
                 },
                 {
                     name: 'full_name',
@@ -17,7 +17,8 @@ export class CreateClients1638195704873 implements MigrationInterface {
                 },
                 {
                     name: 'email',
-                    type: 'varchar'
+                    type: 'varchar',
+                    isUnique: true
                 },
                 {
                     name: 'password',
@@ -31,6 +32,38 @@ export class CreateClients1638195704873 implements MigrationInterface {
                     name: 'cpf_number',
                     type: 'varchar',
                     isUnique: true
+                },
+                {
+                    name: 'address',
+                    type: 'varchar'
+                },
+                {
+                    name: 'city',
+                    type: 'varchar'
+                },
+                {
+                    name: 'state',
+                    type: 'varchar'
+                },
+                {
+                    name: 'zipcode',
+                    type: 'varchar'
+                },
+                {
+                    name: 'current_balance',
+                    type: 'varchar'
+                },
+                {
+                    name: 'average_salary',
+                    type: 'varchar'
+                },
+                {
+                    name: 'status',
+                    type: 'varchar'
+                },
+                {
+                    name: 'status_date',
+                    type: 'datetime'
                 },
                 {
                     name: 'created_at',

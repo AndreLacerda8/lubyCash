@@ -21,6 +21,30 @@ export class Client {
     @Column()
     cpf_number: string
 
+    @Column()
+    address: string
+
+    @Column()
+    city: string
+
+    @Column()
+    state: string
+
+    @Column()
+    zipcode: string
+
+    @Column()
+    current_balance: string
+
+    @Column()
+    average_salary: string
+
+    @Column()
+    status: string
+
+    @Column()
+    status_date: Date
+
     @CreateDateColumn()
     created_at: Date
     
