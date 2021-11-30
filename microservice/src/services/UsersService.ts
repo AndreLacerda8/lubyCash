@@ -16,7 +16,7 @@ interface UserI{
 	average_salary: string
 }
 
-export async function CreateUser(user: any){
+export async function CreateUser(user: UserI){
     if(parseFloat(user.average_salary) < 500){
         Mailer({
             to: user.email,

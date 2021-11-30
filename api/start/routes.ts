@@ -24,4 +24,4 @@ Route.get('/', async () => {
   
 })
 
-Route.post('/register', 'ClientsController.store')
+Route.post('register', 'ClientsController.store')

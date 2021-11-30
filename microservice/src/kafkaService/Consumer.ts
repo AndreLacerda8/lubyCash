@@ -7,10 +7,6 @@ interface ConsumerProps{
     fromBeginning?: boolean
 }
 
-interface MessageValue{
-
-}
-
 const kafka = new Kafka({
     clientId: 'microservice',
     brokers: ['kafka:9092']
