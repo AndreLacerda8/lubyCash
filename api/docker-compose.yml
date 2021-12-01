@@ -13,7 +13,7 @@ services:
       context: .
       dockerfile: ./docker/api/Dockerfile
     ports:
-      - "3333:3333"
+      - "3002:3002"
     working_dir: /usr/app
     volumes:
       - .:/usr/app

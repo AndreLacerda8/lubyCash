@@ -13,7 +13,7 @@ services:
       context: .
       dockerfile: ./docker/microservice/Dockerfile
     ports:
-      - "8080:8080"
+      - "3001:3001"
     working_dir: /usr/app
     volumes:
       - .:/usr/app

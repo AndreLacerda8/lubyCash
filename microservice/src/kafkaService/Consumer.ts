@@ -1,5 +1,5 @@
 import { Kafka } from 'kafkajs'
-import { CreateUser } from '../services/UsersService'
+import { CreateUser } from '../services/CreateClient'
 
 interface ConsumerProps{
     groupId: string

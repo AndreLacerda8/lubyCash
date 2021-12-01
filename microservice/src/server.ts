@@ -1,5 +1,5 @@
 import express from 'express'
-import cors from 'cors'
+// import cors from 'cors'
 import "reflect-metadata"
 import { Consumer } from './kafkaService/Consumer'
 import './database'
@@ -11,10 +11,10 @@ Consumer({
 })
 
 const app = express()
-app.use(cors())
+// app.use(cors())
 app.use(express.json())
 app.use(router)
 
-app.listen(8080, () => {
+app.listen(3001, () => {
     console.log('Running')
 })

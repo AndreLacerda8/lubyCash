@@ -8,6 +8,12 @@ export default class Client extends BaseModel {
   @column()
   public cpf_number: string
 
+  @column()
+  public email: string
+
+  @column()
+  public password: string
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
