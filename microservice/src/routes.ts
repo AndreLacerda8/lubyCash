@@ -3,13 +3,14 @@ import { getRepository } from 'typeorm'
 import { Client } from './entities/Client'
 import { ClientPermission } from './entities/ClientsPermission'
 import { Permission } from './entities/Permission'
-import { GetClient, Login } from './services/ClientServices'
+import { GetClient } from './services/ClientServices'
 
 const router = Router()
 
 router.get('/initializedb', async (req, res) => {
     const clientRepository = getRepository(Client)
     const client = new Client()
+    client.api_id = 'd163b3fb-eb4d-488a-8a7b-23d730c5894c'
     client.full_name = 'André Lacerda'
     client.email = 'andr@mail.com'
     client.password = 'senhaboa'
@@ -38,7 +39,5 @@ router.get('/initializedb', async (req, res) => {
 })
 
 router.get('/clients/:cpf', GetClient)
-
-router.post('/login', Login)
 
 export { router }

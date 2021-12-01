@@ -3,6 +3,7 @@ import { Client } from "../entities/Client";
 import { Mailer } from "./Mailer";
 
 interface UserI{
+    api_id: string
     full_name: string
 	email: string
     password: string
@@ -39,6 +40,7 @@ export async function CreateUser(user: UserI){
 async function addClientOnDB(user: UserI, status: 'disapproved' | 'approved'){
     const clientRepository = getRepository(Client)
     const client = new Client()
+    client.api_id = user.api_id
     client.full_name = user.full_name
     client.email = user.email
     client.password = user.password

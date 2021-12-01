@@ -15,11 +15,13 @@ export class UsersPermissions1638365360587 implements MigrationInterface {
                 },
                 {
                     name: 'client_id',
-                    type: 'uuid'
+                    type: 'char(36)',
+                    isNullable: true
                 },
                 {
                     name: 'permission_id',
-                    type: 'int'
+                    type: 'int',
+                    isNullable: true
                 },
                 {
                     name: "created_at",

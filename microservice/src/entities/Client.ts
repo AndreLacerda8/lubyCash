@@ -7,6 +7,9 @@ export class Client {
     readonly id: string
 
     @Column()
+    api_id: string
+
+    @Column()
     full_name: string
 
     @Column()

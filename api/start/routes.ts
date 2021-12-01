@@ -25,3 +25,9 @@ Route.get('/', async () => {
 })
 
 Route.post('register', 'ClientsController.store')
+
+Route.post('login', 'ClientsController.login')
+
+Route.get('clients/profile', 'ClientsController.show').middleware('auth')
+
+Route.put('clients/profile', 'ClientsController.update').middleware('auth')

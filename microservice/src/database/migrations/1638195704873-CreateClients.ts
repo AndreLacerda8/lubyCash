@@ -12,6 +12,10 @@ export class CreateClients1638195704873 implements MigrationInterface {
                     isPrimary: true,
                 },
                 {
+                    name: 'api_id',
+                    type: 'char(36)'
+                },
+                {
                     name: 'full_name',
                     type: 'varchar'
                 },
