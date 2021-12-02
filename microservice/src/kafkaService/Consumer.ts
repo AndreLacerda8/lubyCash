@@ -1,5 +1,7 @@
 import { Kafka } from 'kafkajs'
-import { CreateUser } from '../services/CreateClient'
+import { CreateClient } from '../services/CreateClient'
+import { DeleteClient } from '../services/DeleteClient'
+import { UpdateClient } from '../services/UpdateClient'
 
 interface ConsumerProps{
     groupId: string
@@ -20,9 +22,18 @@ export async function Consumer({ groupId, topic, fromBeginning = false }: Consum
 
     await consumer.run({
         eachMessage: async ({ topic, partition, message }) => {
-            if(message.value)
-                if(topic === 'new-user')
-                    CreateUser(JSON.parse(message.value.toString()))
+            if(message.value){
+                switch(topic){
+                    case 'new-user':
+                        CreateClient(JSON.parse(message.value.toString()))
+                        break;
+                    case 'update-user':
+                        UpdateClient(JSON.parse(message.value.toString()))
+                        break;
+                    case 'delete-user':
+                        DeleteClient(JSON.parse(message.value.toString()))
+                }
+            }
         }
     })
 }

@@ -3,7 +3,8 @@ import { getRepository } from 'typeorm'
 import { Client } from './entities/Client'
 import { ClientPermission } from './entities/ClientsPermission'
 import { Permission } from './entities/Permission'
-import { GetClient } from './services/ClientServices'
+import { GetAdmins } from './services/GetAdmins'
+import { GetClient } from './services/GetClient'
 
 const router = Router()
 
@@ -33,11 +34,13 @@ router.get('/initializedb', async (req, res) => {
 
     const clientsPermissionRepository = getRepository(ClientPermission)
     const clientsPermission = new ClientPermission()
-    clientsPermission.client_id = client.id
-    clientsPermission.permission_id = permission.id
+    clientsPermission.clientId = client.id
+    clientsPermission.permissionId = permission.id
     clientsPermissionRepository.save(clientsPermission)
 })
 
-router.get('/clients/:cpf', GetClient)
+router.get('/clients/:id', GetClient)
+
+router.get('/admin/:id', GetAdmins)
 
 export { router }

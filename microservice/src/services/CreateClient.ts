@@ -2,7 +2,7 @@ import { getRepository } from "typeorm";
 import { Client } from "../entities/Client";
 import { Mailer } from "./Mailer";
 
-interface UserI{
+export interface ClientI{
     api_id: string
     full_name: string
 	email: string
@@ -17,7 +17,7 @@ interface UserI{
 	average_salary: string
 }
 
-export async function CreateUser(user: UserI){
+export async function CreateClient(user: ClientI){
     if(parseFloat(user.average_salary) < 500){
         Mailer({
             to: user.email,
@@ -37,7 +37,7 @@ export async function CreateUser(user: UserI){
     }
 }
 
-async function addClientOnDB(user: UserI, status: 'disapproved' | 'approved'){
+async function addClientOnDB(user: ClientI, status: 'disapproved' | 'approved'){
     const clientRepository = getRepository(Client)
     const client = new Client()
     client.api_id = user.api_id

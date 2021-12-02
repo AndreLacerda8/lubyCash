@@ -1,17 +1,25 @@
 import express from 'express'
-// import cors from 'cors'
 import "reflect-metadata"
 import { Consumer } from './kafkaService/Consumer'
 import './database'
 import { router } from './routes'
 
 Consumer({
-    groupId: 'user',
+    groupId: 'create',
     topic: 'new-user'
 })
 
+Consumer({
+    groupId: 'update',
+    topic: 'update-user'
+})
+
+Consumer({
+    groupId: 'delete',
+    topic: 'delete-user'
+})
+
 const app = express()
-// app.use(cors())
 app.use(express.json())
 app.use(router)
 

@@ -6,7 +6,7 @@ import { Client } from "../entities/Client"
 export async function GetClient(req: Request, res: Response){
     try{
         const client = await getRepository(Client).findOne({
-            where: {cpf_number: req.params.cpf}
+            where: {api_id: req.params.id}
         })
         if(!client){
             return res.json({ message: 'Client not found', statusCode: 404 })
