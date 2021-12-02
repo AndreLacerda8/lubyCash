@@ -1,4 +1,5 @@
 import { Kafka } from 'kafkajs'
+import { AddClientPermission } from '../services/AddClientPermission'
 import { CreateClient } from '../services/CreateClient'
 import { DeleteClient } from '../services/DeleteClient'
 import { UpdateClient } from '../services/UpdateClient'
@@ -32,6 +33,10 @@ export async function Consumer({ groupId, topic, fromBeginning = false }: Consum
                         break;
                     case 'delete-user':
                         DeleteClient(JSON.parse(message.value.toString()))
+                        break;
+                    case 'add-permission':
+                        AddClientPermission(JSON.parse(message.value.toString()))
+                        break;
                 }
             }
         }

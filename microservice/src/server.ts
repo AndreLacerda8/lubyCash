@@ -19,6 +19,11 @@ Consumer({
     topic: 'delete-user'
 })
 
+Consumer({
+    groupId: 'permission',
+    topic: 'add-permission'
+})
+
 const app = express()
 app.use(express.json())
 app.use(router)

@@ -33,3 +33,7 @@ Route.get('clients/profile', 'ClientsController.show').middleware('auth')
 Route.put('clients/profile', 'ClientsController.update').middleware('auth')
 
 Route.delete('clients/profile', 'ClientsController.destroy').middleware('auth')
+
+Route.get('clients', 'ClientsController.index').middleware(['auth', 'isAdmin'])
+
+Route.post('registeradmin', 'ClientsController.registerAdmin').middleware(['auth', 'isAdmin'])

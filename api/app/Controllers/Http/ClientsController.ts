@@ -5,7 +5,31 @@ import axios from 'axios'
 import { Producer } from '../../../kafkaService/Producer'
 
 export default class ClientsController {
-  public async index({}: HttpContextContract) {}
+  public async index({ request, response }: HttpContextContract) {
+    try{
+      const { data } = await axios(`http://microservice:3001/clients`)
+
+      const filters = request.qs()
+      let clients = data
+
+      if(filters.status){
+        clients = data.filter(client => {
+          return client.status === filters.status
+        })
+      }
+
+      // if(filters.date){
+        
+      // }
+
+      return response.status(200).json(clients)
+    } catch(err){
+      return response.status(err.status).json({
+        message: 'An unexpected error has occurred',
+        originalError: err.message
+      })
+    }
+  }
 
   public async store({ request, response }: HttpContextContract) {
     try{
@@ -168,5 +192,35 @@ export default class ClientsController {
         originalError: err.message
       })
     }
+  }
+
+  public async registerAdmin({request, response}: HttpContextContract){
+    try{
+      const client = await Client.findBy('email', request.body().email)
+  
+      if(!client){
+        return response.status(404).json({ message: 'Client not found' })
+      }
+
+      const clientPermission = {
+        api_id: client.id,
+        permissionName: 'admin'
+      }
+
+      Producer({
+        topic: 'add-permission',
+        messages: [
+          { value: JSON.stringify(clientPermission) }
+        ]
+      })
+
+      return response.status(200).json({ message: 'Client is now admin' })
+    } catch(err){
+      return response.status(err.status).json({
+        message: 'An unexpected error has occurred',
+        originalError: err.message
+      })
+    }
+
   }
 }

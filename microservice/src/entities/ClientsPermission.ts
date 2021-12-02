@@ -1,19 +1,26 @@
-import {Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryColumn, UpdateDateColumn} from "typeorm";
+import {Column, CreateDateColumn, Entity, Generated, JoinColumn, ManyToOne, PrimaryColumn, UpdateDateColumn} from "typeorm";
 import { Client } from "./Client";
 import { Permission } from "./Permission";
 
 @Entity('users_permissions')
 export class ClientPermission {
     @PrimaryColumn()
-    readonly id: string
+    @Generated('increment')
+    readonly id: number
+
+    @Column()
+    client_id: string
+
+    @Column()
+    permission_id: number
 
     @JoinColumn({name: 'client_id'})
     @ManyToOne(() => Client)
-    clientId: Client | string
+    clientId: Client
 
     @JoinColumn({name: 'permission_id'})
     @ManyToOne(() => Permission)
-    permissionId: Permission | number
+    permissionId: Permission
 
     @CreateDateColumn()
     created_at: Date
