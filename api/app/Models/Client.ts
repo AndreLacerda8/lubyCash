@@ -15,6 +15,12 @@ export default class Client extends BaseModel {
   @column()
   public password: string
 
+  @column()
+  public token_forgot_password: string | null
+
+  @column()
+  public token_forgot_password_created_at: Date | null
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 

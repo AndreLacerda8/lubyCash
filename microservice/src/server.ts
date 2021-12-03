@@ -24,6 +24,16 @@ Consumer({
     topic: 'add-permission'
 })
 
+Consumer({
+    groupId: 'password',
+    topic: 'forgot-password'
+})
+
+Consumer({
+    groupId: 'update-password',
+    topic: 'redefine-password'
+})
+
 const app = express()
 app.use(express.json())
 app.use(router)

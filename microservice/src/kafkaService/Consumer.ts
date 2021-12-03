@@ -2,6 +2,7 @@ import { Kafka } from 'kafkajs'
 import { AddClientPermission } from '../services/AddClientPermission'
 import { CreateClient } from '../services/CreateClient'
 import { DeleteClient } from '../services/DeleteClient'
+import { ForgotPassword, RedefinePassword } from '../services/ForgotPassword'
 import { UpdateClient } from '../services/UpdateClient'
 
 interface ConsumerProps{
@@ -36,6 +37,12 @@ export async function Consumer({ groupId, topic, fromBeginning = false }: Consum
                         break;
                     case 'add-permission':
                         AddClientPermission(JSON.parse(message.value.toString()))
+                        break;
+                    case 'forgot-password':
+                        ForgotPassword(JSON.parse(message.value.toString()))
+                        break;
+                    case 'redefine-password':
+                        RedefinePassword(JSON.parse(message.value.toString()))
                         break;
                 }
             }

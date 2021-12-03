@@ -28,6 +28,10 @@ Route.post('register', 'ClientsControllerResource.store')
 
 Route.post('login', 'ClientsControllerOtherServices.login')
 
+Route.post('forgotpassword', 'ForgotPasswordsController.store')
+
+Route.post('restorepassword', 'ForgotPasswordsController.update')
+
 Route.get('clients/profile', 'ClientsControllerResource.show').middleware('auth')
 
 Route.put('clients/profile', 'ClientsControllerResource.update').middleware('auth')
