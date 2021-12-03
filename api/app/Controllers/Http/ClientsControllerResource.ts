@@ -9,22 +9,8 @@ import { Producer } from '../../../kafkaService/Producer'
 export default class ClientsController {
   public async index({ request, response }: HttpContextContract) {
     try{
-      const { data } = await axiosReq(`/clients`)
-
-      const filters = request.qs()
-      let clients = data
-
-      if(filters.status){
-        clients = data.filter(client => {
-          return client.status === filters.status
-        })
-      }
-
-      // if(filters.date){
-        
-      // }
-
-      return response.status(200).json(clients)
+      const { data } = await axiosReq(`/clients?${request.parsedUrl.query}`)
+      return response.status(200).json(data)
     } catch(err){
       return response.status(err.status).json({
         message: 'An unexpected error has occurred',

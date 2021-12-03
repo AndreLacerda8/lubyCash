@@ -5,9 +5,12 @@ import { Producer } from '../../../kafkaService/Producer'
 import crypto from 'crypto'
 import { axiosReq } from '../../../axiosService/axiosReq'
 import moment from 'moment'
+import ForgotPasswordValidator from 'App/Validators/ForgotPasswordValidator'
+import RestorePasswordValidator from 'App/Validators/RestorePasswordValidator'
 
 export default class ForgotPasswordsController {
   public async store({ request, response }: HttpContextContract) {
+    await request.validate(ForgotPasswordValidator)
     try{
       const email = request.input('email')
       const client = await Client.findBy('email', email)
@@ -39,6 +42,7 @@ export default class ForgotPasswordsController {
   }
 
   public async update({ request, response }: HttpContextContract) {
+    await request.validate(RestorePasswordValidator)
     try{
       const {token, password} = request.all()
 

@@ -1,11 +1,31 @@
+import { Request } from "express"
 import { getRepository } from "typeorm"
 import { Client } from "../entities/Client"
 import { ClientPermission } from "../entities/ClientsPermission"
+import moment from 'moment'
 
-
-export async function GetAllClients(req: any, res: any){
+export async function GetAllClients(req: Request, res: any){
     try{
-        const allClients = await getRepository(Client).find()
+        const allClients = await getRepository(Client).find({
+            where: req.query.status ? { status: req.query.status } : {}
+        })
+
+        const from = req.query.from
+        const to = req.query.to
+
+        let clientsFiltered = allClients
+
+        if(from){
+            clientsFiltered = clientsFiltered.filter(client => {
+                return new Date(`${client.status_date}`).setHours(0,0,0,0) >= new Date(`${from}`).getTime()
+            })
+
+            if(to){
+                clientsFiltered = clientsFiltered.filter(client => {
+                    return new Date(`${client.status_date}`).setHours(0,0,0,0) <= new Date(`${to}`).getTime()
+                })
+            }
+        }
 
         const admins = await getRepository(ClientPermission).find({
             where: {permission_id: 1},
@@ -16,7 +36,7 @@ export async function GetAllClients(req: any, res: any){
             return admin.clientId.id
         })
 
-        const clientsNotAdmin = allClients.filter(client => {
+        const clientsNotAdmin = clientsFiltered.filter(client => {
             return !idsAdmins.includes(client.id)
         })
 
