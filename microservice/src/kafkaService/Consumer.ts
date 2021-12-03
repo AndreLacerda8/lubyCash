@@ -3,6 +3,7 @@ import { AddClientPermission } from '../services/AddClientPermission'
 import { CreateClient } from '../services/CreateClient'
 import { DeleteClient } from '../services/DeleteClient'
 import { ForgotPassword, RedefinePassword } from '../services/ForgotPassword'
+import { NewTransaction } from '../services/NewTransaction'
 import { UpdateClient } from '../services/UpdateClient'
 
 interface ConsumerProps{
@@ -43,6 +44,9 @@ export async function Consumer({ groupId, topic, fromBeginning = false }: Consum
                         break;
                     case 'redefine-password':
                         RedefinePassword(JSON.parse(message.value.toString()))
+                        break;
+                    case 'new-transaction':
+                        NewTransaction(JSON.parse(message.value.toString()))
                         break;
                 }
             }

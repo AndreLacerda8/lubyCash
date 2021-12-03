@@ -2,7 +2,6 @@ import { Request } from "express"
 import { getRepository } from "typeorm"
 import { Client } from "../entities/Client"
 import { ClientPermission } from "../entities/ClientsPermission"
-import moment from 'moment'
 
 export async function GetAllClients(req: Request, res: any){
     try{

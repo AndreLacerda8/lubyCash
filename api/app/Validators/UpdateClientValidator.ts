@@ -43,7 +43,6 @@ export default class UpdateClientValidator {
       rules.minLength(8),
       rules.maxLength(8)
     ]),
-    current_balance: schema.string(),
     average_salary: schema.string()
   })
 

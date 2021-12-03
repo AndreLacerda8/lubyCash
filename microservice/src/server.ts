@@ -34,6 +34,11 @@ Consumer({
     topic: 'redefine-password'
 })
 
+Consumer({
+    groupId: 'transaction',
+    topic: 'new-transaction'
+})
+
 const app = express()
 app.use(express.json())
 app.use(router)

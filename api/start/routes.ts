@@ -38,6 +38,8 @@ Route.put('clients/profile', 'ClientsControllerResource.update').middleware('aut
 
 Route.delete('clients/profile', 'ClientsControllerResource.destroy').middleware('auth')
 
+Route.post('pix', 'TransactionsController.send').middleware('auth')
+
 Route.get('clients', 'ClientsControllerResource.index').middleware(['auth', 'isAdmin'])
 
 Route.post('registeradmin', 'ClientsControllerOtherServices.registerAdmin').middleware(['auth', 'isAdmin'])
