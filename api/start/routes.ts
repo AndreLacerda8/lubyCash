@@ -24,16 +24,16 @@ Route.get('/', async () => {
     return({ hello: 'World' })
 })
 
-Route.post('register', 'ClientsController.store')
+Route.post('register', 'ClientsControllerResource.store')
 
-Route.post('login', 'ClientsController.login')
+Route.post('login', 'ClientsControllerOtherServices.login')
 
-Route.get('clients/profile', 'ClientsController.show').middleware('auth')
+Route.get('clients/profile', 'ClientsControllerResource.show').middleware('auth')
 
-Route.put('clients/profile', 'ClientsController.update').middleware('auth')
+Route.put('clients/profile', 'ClientsControllerResource.update').middleware('auth')
 
-Route.delete('clients/profile', 'ClientsController.destroy').middleware('auth')
+Route.delete('clients/profile', 'ClientsControllerResource.destroy').middleware('auth')
 
-Route.get('clients', 'ClientsController.index').middleware(['auth', 'isAdmin'])
+Route.get('clients', 'ClientsControllerResource.index').middleware(['auth', 'isAdmin'])
 
-Route.post('registeradmin', 'ClientsController.registerAdmin').middleware(['auth', 'isAdmin'])
+Route.post('registeradmin', 'ClientsControllerOtherServices.registerAdmin').middleware(['auth', 'isAdmin'])

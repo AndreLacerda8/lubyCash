@@ -1,13 +1,15 @@
 import Hash from '@ioc:Adonis/Core/Hash'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Client from 'App/Models/Client'
-import axios from 'axios'
+import CreateClientValidator from 'App/Validators/CreateClientValidator'
+import UpdateClientValidator from 'App/Validators/UpdateClientValidator'
+import { axiosReq } from '../../../axiosService/axiosReq'
 import { Producer } from '../../../kafkaService/Producer'
 
 export default class ClientsController {
   public async index({ request, response }: HttpContextContract) {
     try{
-      const { data } = await axios(`http://microservice:3001/clients`)
+      const { data } = await axiosReq(`/clients`)
 
       const filters = request.qs()
       let clients = data
@@ -32,6 +34,7 @@ export default class ClientsController {
   }
 
   public async store({ request, response }: HttpContextContract) {
+    await request.validate(CreateClientValidator)
     try{
       const cpf = request.body().cpf_number
       const email = request.body().email
@@ -63,7 +66,7 @@ export default class ClientsController {
 
       const currentClient = await Client.findBy('email', email) || await Client.findBy('cpf_number', cpf)
 
-      const { data } = await axios(`http://microservice:3001/clients/${currentClient?.id}`)
+      const { data } = await axiosReq(`/clients/${currentClient?.id}`)
 
       return data.status === 'disapproved' ?
         response.status(422).json({ message: 'Have you tried to register but failed' }) :
@@ -78,53 +81,9 @@ export default class ClientsController {
     }
   }
 
-  public async login({ auth, request, response }: HttpContextContract) {
-    try{
-      const email = request.body().email
-      const password = request.body().password
-      const token = await auth.use('api').attempt(email, password, {
-        expiresIn: '1day'
-      }).catch(() => response.status(400).json({ message: 'Incorrect data' }))
-
-      if(!token){
-        return response.status(404).json({ message: 'User not Found' })
-      }
-
-      const currentClient = await Client.findBy('email', email)
-
-      const { data } = await axios.get(`http://microservice:3001/clients/${currentClient?.id}`)
-      
-      if(data.status === 'disapproved' || data.statusCode === 404){
-        return response.status(404).json({ message: 'Client not found' })
-      }
-
-      return response.status(200).json({
-        token: token?.token,
-        client: {
-          full_name: data.full_name,
-          email: data.email,
-          phone: data.phone,
-          cpf_number: data.cpf_number,
-          address: data.address,
-          city: data.city,
-          state: data.state,
-          zipcode: data.zipcode,
-          current_balance: data.current_balance,
-          average_salary: data.average_salary,
-        }
-      })
-
-    } catch(err){
-      return response.status(err.status).json({
-        message: 'An unexpected error has occurred',
-        originalError: err.message
-      })
-    }
-  }
-
   public async show({ auth, response }: HttpContextContract) {
     try{
-      const { data } = await axios.get(`http://microservice:3001/clients/${auth.user?.id}`)
+      const { data } = await axiosReq(`/clients/${auth.user?.id}`)
   
       if(data.statusCode === 404){
         return response.status(404).json({ message: 'Client not Found' })
@@ -151,6 +110,7 @@ export default class ClientsController {
   }
 
   public async update({ auth, request, response }: HttpContextContract) {
+    await request.validate(UpdateClientValidator)
     try{
       const id = auth.user?.id
       const client = request.body()
@@ -175,7 +135,7 @@ export default class ClientsController {
     }
   }
 
-  public async destroy({auth, response}: HttpContextContract) {
+  public async destroy({ auth, response }: HttpContextContract) {
     try{
       const id = auth.user?.id
 
@@ -192,35 +152,5 @@ export default class ClientsController {
         originalError: err.message
       })
     }
-  }
-
-  public async registerAdmin({request, response}: HttpContextContract){
-    try{
-      const client = await Client.findBy('email', request.body().email)
-  
-      if(!client){
-        return response.status(404).json({ message: 'Client not found' })
-      }
-
-      const clientPermission = {
-        api_id: client.id,
-        permissionName: 'admin'
-      }
-
-      Producer({
-        topic: 'add-permission',
-        messages: [
-          { value: JSON.stringify(clientPermission) }
-        ]
-      })
-
-      return response.status(200).json({ message: 'Client is now admin' })
-    } catch(err){
-      return response.status(err.status).json({
-        message: 'An unexpected error has occurred',
-        originalError: err.message
-      })
-    }
-
   }
 }
