@@ -24,28 +24,24 @@ Route.get('/', async () => {
     return({ hello: 'World' })
 })
 
-Route.post('register', 'ClientsControllerResource.store')
+Route.group(() => {
+    Route.post('register', 'ClientsControllerResource.store')
+    Route.post('login', 'ClientsControllerOtherServices.login')
+    Route.post('forgotpassword', 'ForgotPasswordsController.store')
+    Route.post('restorepassword', 'ForgotPasswordsController.update')
+})
 
-Route.post('login', 'ClientsControllerOtherServices.login')
+Route.group(() => {
+    Route.post('logout', 'ClientsControllerOtherServices.logout')
+    Route.get('clients/myextract', 'ClientsControllerOtherServices.showMyExtract')
+    Route.get('clients/profile', 'ClientsControllerResource.show')
+    Route.put('clients/profile', 'ClientsControllerResource.update')
+    Route.delete('clients/profile', 'ClientsControllerResource.destroy')
+    Route.post('pix', 'TransactionsController.send')
+}).middleware('auth')
 
-Route.post('forgotpassword', 'ForgotPasswordsController.store')
-
-Route.post('restorepassword', 'ForgotPasswordsController.update')
-
-Route.post('logout', 'ClientsControllerOtherServices.logout').middleware('auth')
-
-Route.get('clients/profile', 'ClientsControllerResource.show').middleware('auth')
-
-Route.get('clients/myextract', 'ClientsControllerOtherServices.showMyExtract').middleware('auth')
-
-Route.put('clients/profile', 'ClientsControllerResource.update').middleware('auth')
-
-Route.delete('clients/profile', 'ClientsControllerResource.destroy').middleware('auth')
-
-Route.post('pix', 'TransactionsController.send').middleware('auth')
-
-Route.get('clients', 'ClientsControllerResource.index').middleware(['auth', 'isAdmin'])
-
-Route.get('clients/extract/:cpf', 'ClientsControllerOtherServices.showExtract').middleware(['auth', 'isAdmin'])
-
-Route.post('registeradmin', 'ClientsControllerOtherServices.registerAdmin').middleware(['auth', 'isAdmin'])
+Route.group(() => {
+    Route.get('clients', 'ClientsControllerResource.index')
+    Route.get('clients/extract/:cpf', 'ClientsControllerOtherServices.showExtract')
+    Route.post('registeradmin', 'ClientsControllerOtherServices.registerAdmin')
+}).middleware(['auth', 'isAdmin'])

@@ -24,7 +24,7 @@ export async function Consumer({ groupId, topic, fromBeginning = false }: Consum
     await consumer.subscribe({ topic, fromBeginning })
 
     await consumer.run({
-        eachMessage: async ({ topic, partition, message }) => {
+        eachMessage: async ({ topic, message }) => {
             if(message.value){
                 switch(topic){
                     case 'new-user':

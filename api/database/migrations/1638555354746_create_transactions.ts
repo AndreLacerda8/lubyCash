@@ -6,8 +6,8 @@ export default class CreateTransactions extends BaseSchema {
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
-      table.uuid('sender_id').references('id').inTable('clients')
-      table.uuid('receiver_id').references('id').inTable('clients')
+      table.uuid('sender_id').references('id').inTable('clients').onDelete('SET NULL')
+      table.uuid('receiver_id').references('id').inTable('clients').onDelete('SET NULL')
       table.decimal('amount')
 
       /**
