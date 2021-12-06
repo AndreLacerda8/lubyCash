@@ -32,7 +32,11 @@ Route.post('forgotpassword', 'ForgotPasswordsController.store')
 
 Route.post('restorepassword', 'ForgotPasswordsController.update')
 
+Route.post('logout', 'ClientsControllerOtherServices.logout').middleware('auth')
+
 Route.get('clients/profile', 'ClientsControllerResource.show').middleware('auth')
+
+Route.get('clients/myextract', 'ClientsControllerOtherServices.showMyExtract').middleware('auth')
 
 Route.put('clients/profile', 'ClientsControllerResource.update').middleware('auth')
 
@@ -41,5 +45,7 @@ Route.delete('clients/profile', 'ClientsControllerResource.destroy').middleware(
 Route.post('pix', 'TransactionsController.send').middleware('auth')
 
 Route.get('clients', 'ClientsControllerResource.index').middleware(['auth', 'isAdmin'])
+
+Route.get('clients/extract/:cpf', 'ClientsControllerOtherServices.showExtract').middleware(['auth', 'isAdmin'])
 
 Route.post('registeradmin', 'ClientsControllerOtherServices.registerAdmin').middleware(['auth', 'isAdmin'])

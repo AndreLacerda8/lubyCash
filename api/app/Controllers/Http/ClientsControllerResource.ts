@@ -33,7 +33,7 @@ export default class ClientsController {
         const client = request.body()
         client.password = hashedPassword
 
-        await Client.create({ cpf_number: cpf, email: request.body().email, password: hashedPassword })
+        await Client.create({ cpf_number: cpf, email: request.body().email, password: hashedPassword, full_name: request.body().full_name })
 
         const newClient = await Client.findBy('cpf_number', cpf)
 
@@ -59,7 +59,6 @@ export default class ClientsController {
         response.status(422).json({ message: 'You are already registered' })
       
     } catch (err){
-      console.log(err)
       return response.status(err.status).json({
         message: 'An unexpected error has occurred',
         originalError: err.message
@@ -103,8 +102,8 @@ export default class ClientsController {
 
       const oldClient = await Client.findOrFail(id)
       oldClient.email = client.email
-      oldClient.password = client.password
       oldClient.cpf_number = client.cpf_number
+      oldClient.full_name = client.full_name
       oldClient.save()
 
       client.api_id = id

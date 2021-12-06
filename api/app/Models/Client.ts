@@ -16,6 +16,9 @@ export default class Client extends BaseModel {
   public password: string
 
   @column()
+  public full_name: string
+
+  @column()
   public token_forgot_password: string | null
 
   @column()

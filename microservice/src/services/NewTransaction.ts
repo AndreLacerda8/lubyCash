@@ -20,8 +20,8 @@ export async function NewTransaction({ sender_id, receiver_id, amount }: NewTran
         })
     
         if(sender && receiver){
-            sender.current_balance = (Number(sender.current_balance.replace(/\D/g, '')) - amount).toString()
-            receiver.current_balance = (Number(receiver.current_balance.replace(/\D/g, '')) + amount).toString()
+            sender.current_balance = (Number(sender.current_balance.replace(/\D/g, '')) - (+amount)).toString()
+            receiver.current_balance = (Number(receiver.current_balance.replace(/\D/g, '')) + (+amount)).toString()
 
             await clientRepository.save(sender)
             await clientRepository.save(receiver)

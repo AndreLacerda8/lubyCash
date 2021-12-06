@@ -1,5 +1,6 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Client from 'App/Models/Client'
+import Transaction from 'App/Models/Transaction'
 import ClientLoginValidator from 'App/Validators/ClientLoginValidator'
 import RegisterAdminValidator from 'App/Validators/RegisterAdminValidator'
 import { axiosReq } from '../../../axiosService/axiosReq'
@@ -41,6 +42,107 @@ export default class ClientsController {
           current_balance: data.current_balance,
           average_salary: data.average_salary,
         }
+      })
+
+    } catch(err){
+      return response.status(err.status).json({
+        message: 'An unexpected error has occurred',
+        originalError: err.message
+      })
+    }
+  }
+
+  public async logout({ auth, response }: HttpContextContract){
+    try{
+      await auth.use('api').revoke()
+      return response.status(200).json({ message: 'Logout successfully' })
+    } catch(err){
+      return response.status(err.status).json({
+        message: 'An unexpected error has occurred',
+        originalError: err.message
+      })
+    }
+  }
+
+  private async getTransactions(id: string, from?: string, to?: string){
+    let transactionsSend: Transaction[]
+    let transactionsReceive: Transaction[]
+    if(from){
+      transactionsSend = await Transaction.query().where('sender_id', id).preload('clientReceiver')
+        .where('created_at', '>=', from)
+      transactionsReceive = await Transaction.query().where('receiver_id', id).preload('clientSender')
+        .where('created_at', '>=', from)
+      if(to){
+        transactionsSend = await Transaction.query().where('sender_id', id).preload('clientReceiver')
+          .where('created_at', '<=', to)
+        transactionsReceive = await Transaction.query().where('receiver_id', id).preload('clientSender')
+          .where('created_at', '<=', to)
+      }
+    } else{
+      transactionsSend = await Transaction.query().where('sender_id', id).preload('clientReceiver')
+      transactionsReceive = await Transaction.query().where('receiver_id', id).preload('clientSender')
+    }
+
+    const formatedTransactionsSend = transactionsSend.map(transaction => {
+      return {
+        to: transaction.clientReceiver.full_name,
+        amount: transaction.amount,
+        date: transaction.createdAt
+      }
+    })
+
+    const formatedTransactionsReceive = transactionsReceive.map(transaction => {
+      return {
+        from: transaction.clientSender.full_name,
+        amount: transaction.amount,
+        date: transaction.createdAt
+      }
+    })
+
+    return { formatedTransactionsSend, formatedTransactionsReceive }
+  }
+
+  public async showMyExtract({ auth, response }: HttpContextContract){
+    try{
+      if(!auth.user?.id){
+        return response.json({ message: 'Error' })
+      }
+      
+      const { formatedTransactionsSend, formatedTransactionsReceive } = await this.getTransactions(auth.user.id)
+
+      const { data } = await axiosReq(`/clients/${auth.user?.id}`)
+
+      return response.status(200).json({
+        pix_sent: formatedTransactionsSend,
+        pix_received: formatedTransactionsReceive,
+        current_balance: data.current_balance
+      })
+    } catch(err){
+      return response.status(err.status).json({
+        message: 'An unexpected error has occurred',
+        originalError: err.message
+      })
+    }
+  }
+
+  public async showExtract({ request, response }: HttpContextContract){
+    try{
+      const client = await Client.findBy('cpf_number', request.param('cpf'))
+      if(!client){
+        return response.status(404).json({ message: 'Client not found' })
+      }
+
+      const from = request.qs().from
+      const to = request.qs().to
+
+      const { formatedTransactionsSend, formatedTransactionsReceive } = await this.getTransactions(client.id, from, to)
+
+      const { data } = await axiosReq(`/clients/${client.id}`)
+
+      return response.json({
+        pix_sent: formatedTransactionsSend,
+        pix_received: formatedTransactionsReceive,
+        current_balance: data.current_balance
       })
 
     } catch(err){

@@ -50,7 +50,7 @@ async function addClientOnDB(user: ClientI, status: 'disapproved' | 'approved'){
     client.city = user.city
     client.state = user.state
     client.zipcode = user.zipcode
-    client.current_balance = user.current_balance
+    client.current_balance = status === 'approved' ? `${Number(user.current_balance) + 200}` : user.current_balance
     client.average_salary = user.average_salary
     client.status = status
     client.status_date = new Date()

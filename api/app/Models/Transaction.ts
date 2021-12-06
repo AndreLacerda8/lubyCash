@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
 import Client from './Client'
 
 export default class Transaction extends BaseModel {
@@ -21,9 +21,13 @@ export default class Transaction extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
 
-  @hasMany(() => Client)
-  public lientSender: HasMany<typeof Client>
+  @belongsTo(() => Client, {
+    foreignKey: 'sender_id'
+  })
+  public clientSender: BelongsTo<typeof Client>
 
-  @hasMany(() => Client)
-  public clientReceiver: HasMany<typeof Client>
+  @belongsTo(() => Client, {
+    foreignKey: 'receiver_id'
+  })
+  public clientReceiver: BelongsTo<typeof Client>
 }
