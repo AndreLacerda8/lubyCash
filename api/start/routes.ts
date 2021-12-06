@@ -43,5 +43,6 @@ Route.group(() => {
 Route.group(() => {
     Route.get('clients', 'ClientsControllerResource.index')
     Route.get('clients/extract/:cpf', 'ClientsControllerOtherServices.showExtract')
+    Route.get('extracts', 'ClientsControllerOtherServices.getAllTransactions')
     Route.post('registeradmin', 'ClientsControllerOtherServices.registerAdmin')
 }).middleware(['auth', 'isAdmin'])

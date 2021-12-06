@@ -64,6 +64,42 @@ export default class ClientsController {
     }
   }
 
+  public async getAllTransactions({ request, response }: HttpContextContract){
+    try{
+      const { from, to } = request.qs()
+      let transactions: Transaction[]
+
+      if(from){
+        transactions = await Transaction.query().preload('clientReceiver').preload('clientSender')
+          .where('created_at', '>=', new Date(`${from}T00:00:00`))
+        if(to){
+          transactions = transactions.filter(transaction => {
+            return new Date(`${transaction.createdAt}`).setHours(0,0,0,0) <= new Date(`${to}`).getTime()
+          })
+        }
+      } else {
+        transactions = await Transaction.query().preload('clientReceiver').preload('clientSender')
+      }
+
+      const formatedTransactions = transactions.map(transaction => {
+        return{
+          from: transaction.clientSender.full_name,
+          to: transaction.clientReceiver.full_name,
+          amount: transaction.amount,
+          date: transaction.createdAt
+        }
+      })
+      return response.json({
+        formatedTransactions
+      })
+    } catch(err){
+      return response.status(err.status).json({
+        message: 'An unexpected error has occurred',
+        originalError: err.message
+      })
+    }
+  }
+
   private async getTransactions(id: string, from?: string, to?: string){
     let transactionsSend: Transaction[]
     let transactionsReceive: Transaction[]
@@ -73,10 +109,12 @@ export default class ClientsController {
       transactionsReceive = await Transaction.query().where('receiver_id', id).preload('clientSender')
         .where('created_at', '>=', from)
       if(to){
-        transactionsSend = await Transaction.query().where('sender_id', id).preload('clientReceiver')
-          .where('created_at', '<=', to)
-        transactionsReceive = await Transaction.query().where('receiver_id', id).preload('clientSender')
-          .where('created_at', '<=', to)
+        transactionsSend = transactionsSend.filter(transaction => {
+          return new Date(`${transaction.createdAt}`).setHours(0,0,0,0) <= new Date(`${to}`).getTime()
+        })
+        transactionsReceive = transactionsReceive.filter(transaction => {
+          return new Date(`${transaction.createdAt}`).setHours(0,0,0,0) <= new Date(`${to}`).getTime()
+        })
       }
     } else{
       transactionsSend = await Transaction.query().where('sender_id', id).preload('clientReceiver')
