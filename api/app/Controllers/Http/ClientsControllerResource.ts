@@ -84,7 +84,8 @@ export default class ClientsController {
         state: data.state,
         zipcode: data.zipcode,
         current_balance: data.current_balance,
-        average_salary: data.average_salary
+        average_salary: data.average_salary,
+        permissions: data.permissions
       })
     } catch(err){
       return response.status(err.status).json({

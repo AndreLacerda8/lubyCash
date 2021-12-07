@@ -41,6 +41,7 @@ export default class ClientsController {
           zipcode: data.zipcode,
           current_balance: data.current_balance,
           average_salary: data.average_salary,
+          permissions: data.permissions
         }
       })
 

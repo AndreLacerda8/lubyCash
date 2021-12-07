@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 
 import { getRepository } from "typeorm"
 import { Client } from "../entities/Client"
+import { ClientPermission } from "../entities/ClientsPermission"
 
 export async function GetClient(req: Request, res: Response){
     try{
@@ -11,7 +12,22 @@ export async function GetClient(req: Request, res: Response){
         if(!client){
             return res.json({ message: 'Client not found', statusCode: 404 })
         }
-        return res.status(200).json(client)
+
+        const clientPermissions = getRepository(ClientPermission)
+        const allpermissions = await clientPermissions.find({
+            where: {client_id: client?.id},
+            relations: ['permissionId']
+        })
+
+        const permissionsFormated = allpermissions.map(permission => {
+            return permission.permissionId.name
+        })
+
+        const formatedClient = {
+            ...client,
+            permissions: permissionsFormated
+        }
+        return res.status(200).json(formatedClient)
     } catch(error: any){
         return res.status(error.status).json({
             message: 'An unexpected error has occurred',
